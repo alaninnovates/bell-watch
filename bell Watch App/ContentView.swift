@@ -21,25 +21,41 @@ struct ContentView: View {
   @State private var currPeriod: Period = Period(start: Time(0, 0), name: "")
   @State private var nextPeriod: Period = Period(start: Time(0, 0), name: "")
   @State private var lastPeriod: Bool = false
+
   var body: some View {
     let screenSize = WKInterfaceDevice.current().screenBounds
+    let fontScale = screenSize.width / 208
     VStack {
       if !loaded || timeLeft <= 0 {
-        Text("Syncing schedule")
-          .font(.system(size: 30, weight: .regular, design: .monospaced))
+        Text("Syncing Schedule")
+          .font(
+            .system(
+              size: 30 * fontScale, weight: .regular,
+              design: .monospaced))
       } else {
         Text(
           "\(String(format: "%02d", timeLeft / 3600)):\(String(format: "%02d", timeLeft % 3600 / 60)):\(String(format: "%02d", timeLeft % 60))"
         )
-        .font(.system(size: 30, weight: .bold, design: .monospaced))
+        .font(
+          .system(
+            size: 30 * fontScale, weight: .bold, design: .monospaced))
         Text(periodName)
-          .font(.system(size: 20, weight: .regular, design: .monospaced))
+          .font(
+            .system(
+              size: 20 * fontScale, weight: .regular,
+              design: .monospaced))
         HStack {
           Text("SCHEDULE")
-            .font(.system(size: 10, weight: .regular, design: .monospaced))
+            .font(
+              .system(
+                size: 10 * fontScale, weight: .regular,
+                design: .monospaced))
           Spacer()
           Text(scheduleName)
-            .font(.system(size: 10, weight: .regular, design: .monospaced))
+            .font(
+              .system(
+                size: 10 * fontScale, weight: .regular,
+                design: .monospaced))
         }.padding(.horizontal).frame(
           width: screenSize.width * 0.8, height: screenSize.height * 0.1, alignment: .bottomTrailing
         )
@@ -49,7 +65,7 @@ struct ContentView: View {
     // .background(TimerArc(currentSeconds: timeLeft, totalSeconds: totalTime).fill(.gray).opacity(0.7).frame(width: screenSize.width * 0.8, height: screenSize.width * 0.8))
     .background(
       PartialRoundedRectangle(cornerRadius: 10, currentSeconds: timeLeft, totalSeconds: totalTime)
-        .opacity(0.7).frame(width: screenSize.width*0.85, height: screenSize.height*0.8)
+        .opacity(0.7).frame(width: screenSize.width * 0.85, height: screenSize.height * 0.8)
         .foregroundColor(getBorderColor())
     )
     .padding()
@@ -184,6 +200,9 @@ struct ContentView: View {
       let specialDay = nowIsSpecialDay()
       if specialDay != nil {
         print("special day")
+        timeLeft = Int(specialDay!.to.timeIntervalSince(self.now))
+        periodName = specialDay!.name ?? "Special Day"
+        scheduleName = getSchedule(specialDay!.scheduleId)!.name
       } else {
         print("normal day")
         let currPeriod = getCurrentPeriod()
