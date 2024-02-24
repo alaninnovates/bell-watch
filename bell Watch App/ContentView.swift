@@ -121,7 +121,7 @@ struct ContentView: View {
   }
   func nowIsSpecialDay() -> SpecialDay? {
     for specialDay in calendar.specialDays {
-      if specialDay.from <= self.now && self.now <= specialDay.to {
+      if now.dateIsBetween(specialDay.from, specialDay.to) {
         return specialDay
       }
     }
@@ -200,7 +200,9 @@ struct ContentView: View {
       let specialDay = nowIsSpecialDay()
       if specialDay != nil {
         print("special day")
-        timeLeft = Int(specialDay!.to.timeIntervalSince(self.now))
+        let toWithoutHMS = Foundation.Calendar.current.date(
+          bySettingHour: 23, minute: 59, second: 59, of: specialDay!.to)!
+        timeLeft = Int(toWithoutHMS.timeIntervalSince(self.now))
         periodName = specialDay!.name ?? "Special Day"
         scheduleName = getSchedule(specialDay!.scheduleId)!.name
       } else {

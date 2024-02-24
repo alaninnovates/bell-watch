@@ -43,6 +43,14 @@ extension Date {
     let second = Int(timeParts[2])!
     return Time(hour, minute, second)
   }
+  func dateIsBetween(_ from: Date, _ to: Date) -> Bool {
+    // only compare the date part, not the time part
+    let calendar = Foundation.Calendar.current
+    let fromWithoutHMS = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: from)!
+    let toWithoutHMS = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: to)!
+    let selfWithoutHMS = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: self)!
+    return selfWithoutHMS >= fromWithoutHMS && selfWithoutHMS <= toWithoutHMS
+  }
 }
 
 /*
